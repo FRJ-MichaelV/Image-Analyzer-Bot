@@ -10,9 +10,8 @@ const messages = require("./messages.json");
 const {
   callAIService,
   extractMessageDetails,
-  getRequestRecievedMessage,
 } = require("./functions");
- 
+const AppError = require("./errors/AppError.js");
 class TeamsBot extends TeamsActivityHandler {
   constructor() {
     super();
@@ -26,34 +25,39 @@ class TeamsBot extends TeamsActivityHandler {
             { type: "delay", value: 2000 },
             { type: ActivityTypes.Message, text: messages.WELLCOME_MESSAGE },
           ]);
-          // await context.sendActivity(messages.WELLCOME_MESSAGE);
+          
           await next();
         }
       }
     });
  
     this.onMessage(async (context, next) => {
-      // remove the recipient mention from the message
-      TurnContext.removeRecipientMention(context.activity);
- 
-      const messageDetails = await extractMessageDetails(context);
- 
-      if (messageDetails && messageDetails.error) {
-        // await context.sendActivity(messageDetails.error);
-        await context.sendActivities([
-            { type: "delay", value: 2000 },
-            { type: ActivityTypes.Message, text: messageDetails.error },
-          ]);
-      } else {
+      try {
+        // remove the recipient mention from the message
+        TurnContext.removeRecipientMention(context.activity);
+        // get the message details  
+        const messageDetails = await extractMessageDetails(context);
+        
         const response = await callAIService(messageDetails);
-        if (response) {
-          
-          // send the response
-          await context.sendActivity(response);
+        await context.sendActivity(response);
+        
+      } catch (error) {
+        console.log(error);
+        let errorMessage = messages.GENERIC_ERROR_MESSAGE;
+        if (error instanceof AppError) {
+          errorMessage = error.message;
         }
+        await context.sendActivities([
+          { type: "delay", value: 2000 },
+          { type: ActivityTypes.Message, text: errorMessage },
+        ]);
       }
-      await next();
+      finally {
+        await next();
+      }
+      
     });
+
   }
 }
  
