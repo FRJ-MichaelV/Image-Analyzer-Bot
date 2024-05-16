@@ -14,11 +14,11 @@ const callAIService = async (obj) => {
     if (response.status == 200 && response.data && response.data.res) {
       return response.data.res;
     } else {
-      throw new AppError(messages.EMPTY_RESPONSE_MESSAGE);
+      return messages.EMPTY_RESPONSE_MESSAGE;
     }
   } catch (error) {
-    const statusCode = error.response.status;
-    if (statusCode === 400) {
+    
+    if (error.response && error.response.status === 400) {
       throw new AppError(messages.INVALID_REQUEST_MESSAGE);
     } else {
       throw new AppError(messages.GENERIC_ERROR_MESSAGE);
@@ -29,7 +29,7 @@ const callAIService = async (obj) => {
 const extractMessageDetails = async (context) => {
   // create an object to store the message details
   const obj = {};
-  try {
+  
     const imageExtensions = ["jpeg", "jpg", "png"];
     const attachments = context.activity.attachments;
     obj.sessionId = context.activity.conversation.id;
@@ -64,28 +64,10 @@ const extractMessageDetails = async (context) => {
       throw new AppError(messages.NO_MESSAGE_ERROR);
     }
     return obj;
-  } catch (error) {
-    console.log(error);
-    throw new AppError(messages.MessageDetailsFetchingError);
-  }
+  
 };
  
-// const getRequestRecievedMessage = (messageDetails) => {
-//   if (
-//     messageDetails &&
-//     messageDetails.messageText &&
-//     messageDetails.imageBuffer
-//   ) {
-//     return messages.IMAGE_TEXT_REQUEST_RECEIVED_MESSAGE;
-//   } else if (messageDetails && messageDetails.messageText) {
-//     return messages.TEXT_REQUEST_RECEIVED_MESSAGE;
-//   } else if (messageDetails && messageDetails.imageBuffer) {
-//     return messages.IMAGE_REQUEST_RECEIVED_MESSAGE;
-//   } else {
-//     return messages.NO_IMGAGE_TEXT_FOUND_MESSAGE;
-//   }
-// };
- 
+
 module.exports = {
   callAIService,
   extractMessageDetails
