@@ -4,7 +4,7 @@ const messages = require("./messages.json");
 const callAIService = async (obj) => {
   try {
     const response = await axios.post(
-      "https://ai-assistant-svc.azurewebsites.net/api/ai/sendmessage",
+      "https://ai-assistant-svc-phase-two.azurewebsites.net/api/ai/sendmessage",
       obj
     );
     if (response.status == 200 && response.data && response.data.res) {

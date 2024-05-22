@@ -22,15 +22,15 @@ class TeamsBot extends TeamsActivityHandler {
       for (let cnt = 0; cnt < membersAdded.length; cnt++) {
         if (membersAdded[cnt].id !== context.activity.recipient.id) {
           // Send a welcome message to the user
-          await context.sendActivities([
-            { type: "delay", value: 2000 },
-            { type: ActivityTypes.Message, text: messages.WELLCOME_MESSAGE },
-          ]);
-          // await context.sendActivity(messages.WELLCOME_MESSAGE);
+          // await context.sendActivities([
+          //   { type: ActivityTypes.Message, text: messages.WELLCOME_MESSAGE },
+          // ]);
+          await context.sendActivity(messages.WELLCOME_MESSAGE);
           await next();
         }
       }
     });
+
  
     this.onMessage(async (context, next) => {
       // remove the recipient mention from the message
