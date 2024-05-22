@@ -25,7 +25,11 @@ class TeamsBot extends TeamsActivityHandler {
           // await context.sendActivities([
           //   { type: ActivityTypes.Message, text: messages.WELLCOME_MESSAGE },
           // ]);
-          await context.sendActivity(messages.WELLCOME_MESSAGE);
+          await context.sendActivities([
+            { type: "delay", value: 2000 },
+            { type: ActivityTypes.Message, text: messages.WELLCOME_MESSAGE },
+          ]);
+          //await context.sendActivity(messages.WELLCOME_MESSAGE);
           await next();
         }
       }

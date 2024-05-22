@@ -28,7 +28,7 @@ const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(
 );
 
 const adapter = new CloudAdapter(botFrameworkAuthentication);
-//adapter.use(new ShowTypingMiddleware(500,7000));
+adapter.use(new ShowTypingMiddleware(500,7000));
 
 adapter.onTurnError = async (context, error) => {
   // This check writes out errors to console log .vs. app insights.
