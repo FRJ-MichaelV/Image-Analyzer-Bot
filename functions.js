@@ -6,8 +6,7 @@ const callAIService = async (obj) => {
   try {
     
     const response = await axios.post(
-      // "https://ai-assistant-svc.azurewebsites.net/api/ai/sendmessage",
-      "http://localhost:5000/api/ai/sendmessage",
+      "https://ai-assistant-svc-phase-two.azurewebsites.net/api/ai/sendmessage",
       obj
     );
     
