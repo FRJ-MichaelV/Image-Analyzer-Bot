@@ -1,28 +1,32 @@
 const axios = require("axios");
 const messages = require("./messages.json");
+const AppError = require("./errors/AppError.js")
  
 const callAIService = async (obj) => {
   try {
+    
     const response = await axios.post(
       "https://ai-assistant-svc-phase-two.azurewebsites.net/api/ai/sendmessage",
       obj
     );
+    
     if (response.status == 200 && response.data && response.data.res) {
       return response.data.res;
     } else {
-      return messages.EMPTY_RESPONSE_MESSAGE;
+      throw new AppError(messages.EMPTY_RESPONSE_MESSAGE);
     }
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.error) {
-      return error.response.data.error;
+    const statusCode = error.response.status;
+    if (statusCode === 400) {
+      throw new AppError(messages.INVALID_REQUEST_MESSAGE);
     } else {
-      console.error(error);
-      return messages.GENERIC_ERROR_MESSAGE;
+      throw new AppError(messages.GENERIC_ERROR_MESSAGE);
     }
   }
 };
  
 const extractMessageDetails = async (context) => {
+  // create an object to store the message details
   const obj = {};
   try {
     const imageExtensions = ["jpeg", "jpg", "png"];
@@ -50,35 +54,38 @@ const extractMessageDetails = async (context) => {
         }
       } else {
         // if the attachment is not an image, send an error message
-        obj.error = messages.INVALID_FILE_TYPE_ERROR;
+        throw new AppError(messages.INVALID_FILE_TYPE_ERROR);
+        
       }
+    }
+
+    if (!obj.messageText && !obj.imageBuffer) {
+      throw new AppError(messages.NO_MESSAGE_ERROR);
     }
     return obj;
   } catch (error) {
     console.log(error);
-    obj.error = messages.MessageDetailsFetchingError;
-    return obj;
+    throw new AppError(messages.MessageDetailsFetchingError);
   }
 };
  
-const getRequestRecievedMessage = (messageDetails) => {
-  if (
-    messageDetails &&
-    messageDetails.messageText &&
-    messageDetails.imageBuffer
-  ) {
-    return messages.IMAGE_TEXT_REQUEST_RECEIVED_MESSAGE;
-  } else if (messageDetails && messageDetails.messageText) {
-    return messages.TEXT_REQUEST_RECEIVED_MESSAGE;
-  } else if (messageDetails && messageDetails.imageBuffer) {
-    return messages.IMAGE_REQUEST_RECEIVED_MESSAGE;
-  } else {
-    return messages.NO_IMGAGE_TEXT_FOUND_MESSAGE;
-  }
-};
+// const getRequestRecievedMessage = (messageDetails) => {
+//   if (
+//     messageDetails &&
+//     messageDetails.messageText &&
+//     messageDetails.imageBuffer
+//   ) {
+//     return messages.IMAGE_TEXT_REQUEST_RECEIVED_MESSAGE;
+//   } else if (messageDetails && messageDetails.messageText) {
+//     return messages.TEXT_REQUEST_RECEIVED_MESSAGE;
+//   } else if (messageDetails && messageDetails.imageBuffer) {
+//     return messages.IMAGE_REQUEST_RECEIVED_MESSAGE;
+//   } else {
+//     return messages.NO_IMGAGE_TEXT_FOUND_MESSAGE;
+//   }
+// };
  
 module.exports = {
   callAIService,
-  extractMessageDetails,
-  getRequestRecievedMessage,
+  extractMessageDetails
 };

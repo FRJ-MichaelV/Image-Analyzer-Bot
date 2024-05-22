@@ -4,8 +4,7 @@
   "GENERIC_ERROR_MESSAGE": "Something went wrong while processing your request. Please try again later.",
   "EMPTY_RESPONSE_MESSAGE": "I'm sorry, but I couldn't generate a response at the moment. Please try again later or provide more information so I can assist you better.",
   "MessageDetailsFetchingError": "An error occured while fetching the details of the message. Please try again later.",
-  "IMAGE_TEXT_REQUEST_RECEIVED_MESSAGE": "I've received your message and the image. I'm processing it now. This might take a moment.",
-  "IMAGE_REQUEST_RECEIVED_MESSAGE": "I've received the image. I'm processing it now. This might take a moment.",
-  "TEXT_REQUEST_RECEIVED_MESSAGE": "I've received your message. I'm processing it now. This might take a moment.",
-  "NO_IMGAGE_TEXT_FOUND_MESSAGE": "I'm sorry, but I couldn't find any text or images. Please provide an image or text so I can assist you better."
+  "NO_MESSAGE_ERROR": "I'm sorry, but I couldn't find any text or images. Please provide an image or text so I can assist you better.",
+  "INVALID_REQUEST_MESSAGE": "I'm sorry, but I couldn't understand your request. Please provide an image or text so I can assist you better."
+
 }
